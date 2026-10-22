@@ -25,3 +25,15 @@ jobs:
 
       - name: Génération du SBOM
         run: npm list --json > sbom.json
+
+      - name: Utilisation sécurisée du secret
+        env:
+          MY_SECRET: ${{ secrets.MY_SECRET_KEY }}
+        run: |
+          echo "Vérification du secret..."
+          if [ -z "$MY_SECRET" ]; then
+            echo "Erreur: Le secret MY_SECRET_KEY n'est pas défini dans GitHub !"
+            exit 1
+          else
+            echo "Le secret est bien configuré et accessible dans la CI !"
+          fi
