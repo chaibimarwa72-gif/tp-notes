@@ -8,10 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+
       - run: npm ci
       - run: npm test
 
+      - name: Build Docker Image
+        run: docker build -t tp-notes:latest .
+
+      - name: Audit des dépendances
+        run: npm audit --audit-level=high || true
+
+      - name: Génération du SBOM
+        run: npm list --json > sbom.json
