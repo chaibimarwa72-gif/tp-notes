@@ -1,4 +1,34 @@
-- name: Scan SAST (Analyse statique de sécurité)
+name: ci
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Exécution des tests
+        run: npm test
+
+      - name: Utilisation sécurisée du secret
+        run: echo "Le secret est ${{ secrets.MY_SECRET }}"
+
+      - name: Scan SAST (Analyse statique de sécurité)
         uses: semgrep/semgrep-action@v1
         with:
           config: p/security-audit
